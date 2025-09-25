@@ -1,0 +1,61 @@
+name: CI
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - ".github/**"
+      - ".gitignore"
+      - "*.md"
+
+jobs:
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    
+    env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Fetch submodules
+      run: git submodule update --init --recursive
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v2.0.0
+
+    - name: Navigate to workspace
+      run: cd $GITHUB_WORKSPACE
+
+    - name: Restore packages
+      run: nuget restore TotalRegistry.sln
+
+    - name: Build All
+      run: msbuild TotalRegistry.sln /p:Configuration=Release
+
+    - name: Get Short SHA
+      id: vars
+      shell: bash
+      run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+    - name: Get Project Version
+      uses: bbonkr/get-version-action@v1.3.1
+      id: get_version
+      with:
+        project: './RegExp/RegExp.vcxproj'
+        show_log_message: true
+
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v4.6.1
+      with:
+          name: v${{ steps.get_version.outputs.version }}-experimental-${{ steps.vars.outputs.sha_short }}
+          path: ./build/*.*
