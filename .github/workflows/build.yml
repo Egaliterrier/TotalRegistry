@@ -28,7 +28,7 @@ jobs:
       run: git submodule update --init --recursive
 
     - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v2
+      uses: TheMrMilchmann/setup-msvc-dev@v4
 
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v2.0.0
