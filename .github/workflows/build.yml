@@ -38,9 +38,14 @@ jobs:
 
     - name: Restore packages
       run: nuget restore TotalRegistry.sln
-           nuget restore ./WTLHelper/WTLHelper.sln
+
+    - name: More packages  
+      run: nuget restore ./WTLHelper/WTLHelper.sln
            
-    - name: Build All
+    - name: Build
+      run: msbuild ./WTLHelper/WTLHelper.sln /p:Configuration=Release
+
+    - name: Build more
       run: msbuild TotalRegistry.sln /p:Configuration=Release
 
     - name: Get Short SHA
