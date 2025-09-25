@@ -28,7 +28,7 @@ jobs:
       run: git submodule update --init --recursive
 
     - name: Setup MSBuild
-    - uses: TheMrMilchmann/setup-msvc-dev@v4
+      uses: TheMrMilchmann/setup-msvc-dev@v4
       with:
         arch: x64
         
