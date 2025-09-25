@@ -38,7 +38,8 @@ jobs:
 
     - name: Restore packages
       run: nuget restore TotalRegistry.sln
-
+           nuget restore ./WTLHelper/WTLHelper.sln
+           
     - name: Build All
       run: msbuild TotalRegistry.sln /p:Configuration=Release
 
